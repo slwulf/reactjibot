@@ -3,6 +3,14 @@
 
 blah blah insert blurb here about high-level shit
 
+TODO
+- make a version of the purple shirt woman emoji set that looks like janet
+- fix emojitools so it can be used as a module here
+- attribute announcements
+    - need to add a db or something maybe?
+- make /reactjibot list announce (settings) work
+- make /reactjibot list set-channel work
+
 what do it do?
 - emojitools
     - lib needs to be modified to take in a url and output an image blob that can be consumed

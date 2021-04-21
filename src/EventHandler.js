@@ -10,14 +10,19 @@ module.exports = class EventHandler {
     }
 
     getIcon() {
-        return this.event.subtype === 'add'
+        const icon = this.event.subtype === 'add'
             ? this.event.name
             : ICONS.DEFAULT
+
+        const key = icon.indexOf('http') === 0
+            ? 'icon_url'
+            : 'icon_emoji'
+
+        return { [key]: icon }
     }
 
     handle(client) {
         const channel = this.getChannel()
-        const icon = this.getIcon()
         const text = this.event.subtype === 'add'
             ? this.onAdd()
             : this.onRemove()
@@ -25,7 +30,7 @@ module.exports = class EventHandler {
         return client.chat.postMessage({
             channel,
             text,
-            icon_emoji: icon
+            ...this.getIcon()
         })
     }
 

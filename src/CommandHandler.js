@@ -5,10 +5,20 @@ module.exports = class CommandHandler {
         this.command = command
     }
 
+    getIcon() {
+        const icon = ICONS.DEFAULT
+
+        const key = icon.indexOf('http') === 0
+            ? 'icon_url'
+            : 'icon_emoji'
+
+        return { [key]: icon }
+    }
+
     handle(client) {
         return client.chat.postMessage({
+            ...this.getIcon(),
             channel: this.command.channel_id,
-            icon_emoji: ICONS.DEFAULT,
             text: `\`\`\`${
                 JSON.stringify(this.command, null, 2)
             }\`\`\``
