@@ -1,36 +1,15 @@
-const {ICONS} = require('./constants.js')
-
 module.exports = class EventHandler {
     constructor(event) {
         this.event = event
     }
 
-    getChannel() {
-        return 'reactjibot'
-    }
-
-    getIcon() {
-        const icon = this.event.subtype === 'add'
-            ? this.event.name
-            : ICONS.DEFAULT
-
-        const key = icon.indexOf('http') === 0
-            ? 'icon_url'
-            : 'icon_emoji'
-
-        return { [key]: icon }
-    }
-
-    handle(client) {
-        const channel = this.getChannel()
+    handle(sendMessage) {
         const text = this.event.subtype === 'add'
             ? this.onAdd()
             : this.onRemove()
 
-        return client.chat.postMessage({
-            channel,
-            text,
-            ...this.getIcon()
+        return sendMessage(text, {
+            icon: this.event.name || undefined
         })
     }
 
