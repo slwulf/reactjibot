@@ -1,5 +1,6 @@
 const BotClient = require('./BotClient.js')
 const CommandHandler = require('./CommandHandler.js')
+const EventHandler = require('./EventHandler.js')
 
 module.exports = class ReactjiBot {
     static configure(config) {
@@ -14,6 +15,7 @@ module.exports = class ReactjiBot {
     start(port) {
         this.client
             .onCommand('/reactjibot', command => new CommandHandler(command))
+            .onEvent('emoji_changed', event => new EventHandler(event))
             .start(port)
     }
 }

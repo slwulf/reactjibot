@@ -1,3 +1,4 @@
+const {onlyEvents} = require('@slack/bolt')
 const Bolt = require('@slack/bolt')
 
 const platforms = {
@@ -17,13 +18,28 @@ const methods = (client, platform) => ({
         }
     },
 
-    onCommand(command, createHandler) {
+    onCommand(commandName, createHandler) {
         if (platform !== 'slack') return this
 
-        client.command(command, async args => {
+        client.command(commandName, async args => {
             const handler = createHandler(args.command)
             await args.ack()
-            await handler.handle(args.say)
+            await handler.handle(args.client)
+        })
+
+        return this
+    },
+
+    onEvent(eventName, createHandler) {
+        if (platform !== 'slack') return this
+
+        client.event(eventName, async args => {
+            const handler = createHandler(args.event)
+            try {
+                await handler.handle(args.client)
+            } catch (error) {
+                console.error(error)
+            }
         })
 
         return this
