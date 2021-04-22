@@ -64,7 +64,11 @@ module.exports = class EmojiList {
                 ? addMsg(update)
                 : removeMsg(update)
 
-            client.sendMessage(message)
+            const icon = update.type === 'add'
+                ? `:${update.name}:`
+                : undefined
+
+            client.sendMessage(message, {icon})
         })
     }
 }
