@@ -27,7 +27,7 @@ const addMsg = ({name, isAlias, alias, author}) => `
 const removeMsg = update => `*Emoji removed:* \`:${update.name}:\``
 
 const getUpdatesFromEvent = event => {
-    const {name, value, names = []} = event
+    const {name, value = '', names = []} = event
     const isAlias = value.indexOf('alias:') === 0
     const [,alias] = value.split(':')
 
@@ -36,7 +36,7 @@ const getUpdatesFromEvent = event => {
         : [{ type: 'add', name, alias, isAlias }]
 }
 
-const getUpdates = (event) => {
+const getUpdates = event => {
     return getUpdatesFromEvent(event).map(async update => {
         if (update.type === 'remove') return update
 
@@ -57,7 +57,7 @@ module.exports = class EmojiList {
 
     static async handleEvent(event) {
         const client = BotClient.fromSlackClient(getClient())
-        const updates = await Promise.all(getUpdates(event, client))
+        const updates = await Promise.all(getUpdates(event))
 
         updates.forEach(update => {
             const message = update.type === 'add'
