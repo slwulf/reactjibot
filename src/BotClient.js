@@ -70,7 +70,7 @@ const methods = (app, platform) => ({
     }
 })
 
-module.exports = function BotClient(config) {
+function BotClient(config) {
     const {
         platform = 'slack',
         SLACK_SIGNING_SECRET,
@@ -86,3 +86,11 @@ module.exports = function BotClient(config) {
 
     return methods(app, platform)
 }
+
+BotClient.fromSlackClient = client => {
+    const botClient = methods(null, 'slack')
+    const sendMessage = botClient.sendMessage.bind(botClient, client)
+    return { sendMessage }
+}
+
+module.exports = BotClient

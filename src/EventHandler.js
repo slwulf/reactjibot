@@ -1,9 +1,15 @@
+const EmojiList = require('./EmojiList.js')
+
 module.exports = class EventHandler {
     constructor(event) {
         this.event = event
     }
 
-    handle(sendMessage) {
+    async handle(sendMessage) {
+        if (EmojiList.isEnabled()) {
+            return EmojiList.handle(this.event)
+        }
+
         const text = this.event.subtype === 'add'
             ? this.onAdd()
             : this.onRemove()
