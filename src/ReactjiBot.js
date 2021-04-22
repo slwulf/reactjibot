@@ -14,7 +14,7 @@ module.exports = class ReactjiBot {
 
     start(port) {
         this.client
-            .onCommand('/reactjibot', command => new CommandHandler(command))
+            .onCommand('/emojilist', command => new CommandHandler(command))
             .onEvent('emoji_changed', event => new EventHandler(event))
             .start(port)
     }
