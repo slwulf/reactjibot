@@ -4,7 +4,6 @@
 blah blah insert blurb here about high-level shit
 
 TODO
-- make a version of the purple shirt woman emoji set that looks like janet
 - fix emojitools so it can be used as a module here
 - attribute announcements
     - need to add a db or something maybe?

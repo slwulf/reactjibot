@@ -40,9 +40,13 @@ const methods = (app, platform) => ({
         app.command(commandName, async args => {
             const handler = createHandler(args.command)
             await args.ack()
-            await handler.handle(
-                this.sendMessage.bind(this, args.client)
-            )
+            try {
+                await handler.handle(
+                    this.sendMessage.bind(this, args.client)
+                )
+            } catch (err) {
+                console.error(err)
+            }
         })
 
         return this
