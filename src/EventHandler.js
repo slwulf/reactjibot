@@ -7,7 +7,7 @@ module.exports = class EventHandler {
 
     async handle(sendMessage) {
         if (EmojiList.isEnabled()) {
-            return EmojiList.handle(this.event)
+            return EmojiList.handleEvent(this.event)
         }
 
         const text = this.event.subtype === 'add'
