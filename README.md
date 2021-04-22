@@ -1,29 +1,23 @@
 # ReactjiBot
-## A Slack bot for creating and managing custom emojis.
+_A chat bot for creating and managing custom emojis._
 
-blah blah insert blurb here about high-level shit
+### Usage
 
-TODO
+```js
+const ReactjiBot = require('reactjibot')
+const bot = ReactjiBot.configure({
+    platform: 'slack', // maybe one day i'll support discord too
+    SLACK_SIGNING_SECRET: process.env.SLACK_SIGNING_SECRET,
+    SLACK_BOT_TOKEN: process.env.SLACK_BOT_TOKEN
+})
+
+bot.start(process.env.PORT || 3000)
+```
+
+I'll put more usage notes here when this is an actual library, promise.
+
+### Todos
 - fix emojitools so it can be used as a module here
-- attribute announcements
-    - need to add a db or something maybe?
-- make /reactjibot list announce (settings) work
-- make /reactjibot list set-channel work
-
-what do it do?
-- emojitools
-    - lib needs to be modified to take in a url and output an image blob that can be consumed
-- emojilist
-    - announce emoji additions, removals, and renaming, with configuration options to turn off each individually
-    - need to figure out how to tie authors, maybe we can hit and cache the server list still?
-    - also ?emojilist add/remove/alias require that weird browser API key which isn't ideal but, eh -- figure out a workaround for this
-        - maybe allow inputting that API key in the config and if it's not there these commands are disabled?
-
-how it do?
-- probably as slash commands
-- `/reactjibot tools <emojitools api>`
-- `/reactjibot list <command> [inputs]`
-    - `/reactjibot list set-channel (channel)`
-        - by default, sets to current channel
-    - `/reactjibot list announce [add|remove|alias] [on|off]`
-    - `/reactjibot list [add|remove|alias] [name] (url|alias)`
+    - `/reactjibot tools <emojitools cli>`
+- `/reactjibot list info <emoji>`
+- `/reactjibot list <add|remove|alias> <name> [url|alias]`
