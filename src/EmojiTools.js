@@ -21,6 +21,13 @@ module.exports = class EmojiTools {
         const client = BotClient.fromSlackClient(getClient())
         const emoji = await Emojitools.fromCommandLineInput(event.text)
 
+        if (emoji.message) {
+            return client.sendInvisibleMessage(emoji.message, {
+                channel: event.channel,
+                user: event.user_id
+            })
+        }
+
         return client.uploadFile(await emoji.saveToReadStream(), {
             channels: [event.channel],
             text: 'Success!'
