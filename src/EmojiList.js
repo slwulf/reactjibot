@@ -26,6 +26,12 @@ const addMsg = ({name, isAlias, alias, author}) => `
 
 const removeMsg = update => `*Emoji removed:* \`:${update.name}:\``
 
+const infoMsg = ({name, isAlias, alias, author, created}) => `
+:${name}: \`:${name}:\` was added by <@${author}> on ${created}.${
+    isAlias ? ` It is an alias for \`:${alias}:\`` : ''
+}
+`.trim()
+
 const getUpdatesFromEvent = event => {
     const {name, value = '', names = []} = event
     const isAlias = value.indexOf('alias:') === 0
@@ -50,6 +56,22 @@ const getUpdates = event => {
     })
 }
 
+const getInfo = async (emoji) => {
+    const fetcher = fetchMatch(emoji)
+    const result = await fetcher(getClient())
+    const [match] = result.emoji
+    if (!match || result.emoji.length === 0) return
+
+    return {
+        name: match.name,
+        created: (new Date(match.created * 1000))
+            .toLocaleDateString('en-US', { month: 'long', day: 'numeric' }),
+        isAlias: Boolean(match.is_alias),
+        alias: match.alias_for,
+        author: match.user_id
+    }
+}
+
 module.exports = class EmojiList {
     static isEnabled() {
         return process.env.SLACK_WEB_TOKEN !== undefined
@@ -65,10 +87,24 @@ module.exports = class EmojiList {
                 : removeMsg(update)
 
             const icon = update.type === 'add'
-                ? `:${update.name}:`
+                ? `:${update.alias || update.name}:`
                 : undefined
 
             client.sendMessage(message, {icon})
         })
+    }
+
+    static async handleCommand(event) {
+        const client = BotClient.fromSlackClient(getClient())
+        const [subcommand, ...args] = event.text.split(' ')
+        switch (subcommand) {
+            case 'info':
+                const emoji = (args[0] || '').replace(/:/g, '')
+                const info = await getInfo(emoji)
+                const msg = info ? infoMsg(info) : "Sorry, I couldn't find that emoji."
+                return client.sendMessage(msg)
+            default:
+                return client.sendMessage("Sorry, I don't know that one.")
+        }
     }
 }
