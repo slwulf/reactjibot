@@ -26,9 +26,9 @@ const addMsg = ({name, isAlias, alias, author}) => `
 
 const removeMsg = update => `*Emoji removed:* \`:${update.name}:\``
 
-const infoMsg = emoji => `
-\`:${emoji.name}:\` was added by <@${emoji.author}> on ${emoji.created}.${
-    emoji.isAlias ? ` It is an alias for \`:${emoji.alias}:\`` : ''
+const infoMsg = ({name, isAlias, alias, author, created}) => `
+:${name}: \`:${name}:\` was added by <@${author}> on ${created}.${
+    isAlias ? ` It is an alias for \`:${alias}:\`` : ''
 }
 `.trim()
 
@@ -101,9 +101,8 @@ module.exports = class EmojiList {
             case 'info':
                 const emoji = (args[0] || '').replace(/:/g, '')
                 const info = await getInfo(emoji)
-                const icon = info ? `:${info.name}:` : undefined
                 const msg = info ? infoMsg(info) : "Sorry, I couldn't find that emoji."
-                return client.sendMessage(msg, {icon})
+                return client.sendMessage(msg)
             default:
                 return client.sendMessage("Sorry, I don't know that one.")
         }
