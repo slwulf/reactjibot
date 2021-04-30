@@ -8,10 +8,10 @@ const getClient = () => new Slack.WebClient(process.env.SLACK_BOT_TOKEN)
 const swapEmojiForUrl = async text => {
     const regex = /:([^:\s]*):/g
     const emojis = text.match(regex) || []
-    const urls = await Promise.all(emojis.reduce(async (obj, emoji) => {
+    const urls = emojis.reduce(async (obj, emoji) => {
         const result = await EmojiList.getEmojiForName(emoji)
-        return { ...obj, [emoji]: result.url }
-    }, {}))
+        return { ...(await obj), [emoji]: result.url }
+    }, Promise.resolve({}))
 
     return text.replace(regex, emoji => urls[emoji])
 }
