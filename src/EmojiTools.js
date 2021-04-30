@@ -18,8 +18,12 @@ const swapEmojiForUrl = async text => {
 
 module.exports = class EmojiTools {
     static async handleCommand(event) {
+        console.log(event)
+
         const client = BotClient.fromSlackClient(getClient())
-        const emoji = await Emojitools.fromCommandLineInput(event.text)
+        const emoji = await Emojitools.fromCommandLineInput(
+            await swapEmojiForUrl(event.text)
+        )
 
         if (emoji.message) {
             return client.sendInvisibleMessage(emoji.message, {
