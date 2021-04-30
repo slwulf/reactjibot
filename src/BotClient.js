@@ -52,6 +52,17 @@ const methods = (app, platform) => ({
         })
     },
 
+    uploadFile(client, file, {
+        channels = [DEFAULTS.CHANNEL],
+        text
+    }) {
+        return client.files.upload({
+            file,
+            channels,
+            text
+        })
+    },
+
     onCommand(commandName, createHandler) {
         if (platform !== 'slack') return this
 
@@ -107,9 +118,14 @@ function BotClient(config) {
 
 BotClient.fromSlackClient = client => {
     const botClient = methods(null, 'slack')
-    const sendMessage = botClient.sendMessage.bind(botClient, client)
-    const sendInvisibleMessage = botClient.sendInvisibleMessage.bind(botClient, client)
-    return { sendMessage, sendInvisibleMessage }
+    return [
+        'sendMessage',
+        'sendInvisibleMessage',
+        'uploadFile'
+    ].reduce((obj, method) => ({
+        ...obj,
+        [method]: botClient[method].bind(botClient, client)
+    }), {})
 }
 
 module.exports = BotClient
