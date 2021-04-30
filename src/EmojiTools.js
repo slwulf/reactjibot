@@ -23,13 +23,13 @@ module.exports = class EmojiTools {
 
         if (emoji.message) {
             return client.sendInvisibleMessage(emoji.message, {
-                channel: event.channel,
+                channel: event.channel_id,
                 user: event.user_id
             })
         }
 
         return client.uploadFile(await emoji.saveToReadStream(), {
-            channels: [event.channel],
+            channels: [event.channel_id],
             text: 'Success!'
         })
     }
