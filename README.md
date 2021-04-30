@@ -17,7 +17,5 @@ bot.start(process.env.PORT || 3000)
 I'll put more usage notes here when this is an actual library, promise.
 
 ### Todos
-- fix emojitools so it can be used as a module here
-    - `/reactjibot tools <emojitools cli>`
-- `/reactjibot list info <emoji>`
+- `/reactjibot tools <emojitools cli>`
 - `/reactjibot list <add|remove|alias> <name> [url|alias]`
