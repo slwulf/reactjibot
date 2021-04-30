@@ -112,4 +112,11 @@ module.exports = class EmojiList {
                 return client.sendInvisibleMessage("Sorry, I don't know that one.", opts)
         }
     }
+
+    static async getEmojiForName(name) {
+        const fetcher = fetchMatch(name.replace(/:/g, ''))
+        const result = await fetcher(getClient())
+        const [match] = result.emoji
+        return match
+    }
 }
