@@ -6,6 +6,14 @@ const platforms = {
     discord: 'Discord'
 }
 
+const getIcon = icon => ({
+    [icon.indexOf('http') === 0 ? 'icon_url' : 'icon_emoji'] : icon
+})
+
+const getMessage = msg => ({
+    [Array.isArray(msg) ? 'attachments' : 'text']: msg
+})
+
 const methods = (app, platform) => ({
     async start(port) {
         const plat = platforms[platform] || 'Unknown Chat App'
@@ -18,19 +26,29 @@ const methods = (app, platform) => ({
         }
     },
 
-    sendMessage(client, text, {
+    sendMessage(client, message, {
         channel = DEFAULTS.CHANNEL,
         icon = DEFAULTS.ICON
     } = {}) {
-        const iconKey = icon.indexOf('http') === 0
-            ? 'icon_url'
-            : 'icon_emoji'
-
         return client.chat.postMessage({
-            text,
+            ...getMessage(message),
             channel,
-            [iconKey]: icon,
-            username: BOT_NAME
+            username: BOT_NAME,
+            ...getIcon(icon)
+        })
+    },
+
+    sendInvisibleMessage(client, message, {
+        channel = DEFAULTS.CHANNEL,
+        icon = DEFAULTS.ICON,
+        user
+    }) {
+        return client.chat.postEphemeral({
+            ...getMessage(message),
+            channel,
+            user,
+            username: BOT_NAME,
+            ...getIcon(icon)
         })
     },
 
@@ -90,7 +108,8 @@ function BotClient(config) {
 BotClient.fromSlackClient = client => {
     const botClient = methods(null, 'slack')
     const sendMessage = botClient.sendMessage.bind(botClient, client)
-    return { sendMessage }
+    const sendInvisibleMessage = botClient.sendInvisibleMessage.bind(botClient, client)
+    return { sendMessage, sendInvisibleMessage }
 }
 
 module.exports = BotClient

@@ -97,14 +97,19 @@ module.exports = class EmojiList {
     static async handleCommand(event) {
         const client = BotClient.fromSlackClient(getClient())
         const [subcommand, ...args] = event.text.split(' ')
+        const opts = {
+            channel: event.channel_id,
+            user: event.user_id
+        }
+
         switch (subcommand) {
             case 'info':
                 const emoji = (args[0] || '').replace(/:/g, '')
                 const info = await getInfo(emoji)
                 const msg = info ? infoMsg(info) : "Sorry, I couldn't find that emoji."
-                return client.sendMessage(msg)
+                return client.sendInvisibleMessage(msg, opts)
             default:
-                return client.sendMessage("Sorry, I don't know that one.")
+                return client.sendInvisibleMessage("Sorry, I don't know that one.", opts)
         }
     }
 }
